@@ -67,11 +67,19 @@ class WilayahController extends Controller
 
     public function getAllKodeByUser($user)
     {
-        $data["kode_provinsi"]  = substr($user->username, 3, 2);
-        $data["kode_kota_kab"]  = substr($user->username, 5, 2);
-        $data["kode_kecamatan"] = substr($user->username, 7, 2);
-        $data["kode_kelurahan"] = substr($user->username, 9, 4);
-        $data["kode_tps"]       = substr($user->username, 13, 2);
+        if (strlen($user->username) == 15) {
+            $data["kode_provinsi"]  = substr($user->username, 3, 2);
+            $data["kode_kota_kab"]  = substr($user->username, 5, 2);
+            $data["kode_kecamatan"] = substr($user->username, 7, 2);
+            $data["kode_kelurahan"] = substr($user->username, 9, 4);
+            $data["kode_tps"]       = substr($user->username, 13, 2);
+        } elseif (strlen($user->username) == 14) {
+            $data["kode_provinsi"]  = substr($user->username, 3, 2);
+            $data["kode_kota_kab"]  = substr($user->username, 5, 1);
+            $data["kode_kecamatan"] = substr($user->username, 6, 2);
+            $data["kode_kelurahan"] = substr($user->username, 8, 4);
+            $data["kode_tps"]       = substr($user->username, 12, 2);
+        }
 
         return $data;
     }

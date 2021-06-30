@@ -39,8 +39,17 @@ class TpsController extends Controller
 
     public function getTPSKPU()
     {
-        $data['provincies'] = $this->wilayahController->getProvinsi();
-        $data['method'] = 'get';
+        $user               = Auth::user();
+        $kota_kab_id        = substr($user->username, 3, 3);
+        if (substr($kota_kab_id, 0, 2) == '00') {
+            $kota_kab_id = substr($kota_kab_id, 2, 1);
+        } elseif (substr($kota_kab_id, 0, 1) == '0') {
+            $kota_kab_id = substr($kota_kab_id, 1, 2);
+        }
+
+        $data['kota']      = $this->wilayahController->getKotaKabById($kota_kab_id);
+        $data['kecamatans'] = $this->wilayahController->getKecamatan($kota_kab_id);
+        $data['method']     = 'get';
 
         return view('kpu.tps.index', $data);
     }
@@ -55,11 +64,11 @@ class TpsController extends Controller
 
     public function postTPS(WilayahRequest $data, $flag = null)
     {
-        $data['provincies'] = $this->wilayahController->getProvinsi();
-        $data['kota_kabs'] = $this->wilayahController->getKotaKab($data['provinsi_id']);
+        $data['kota']       = $this->wilayahController->getKotaKabById($data['kota_kab_id']);
+        $data['provinsi_id']= $data['kota']->provinsi_id;
         $data['kecamatans'] = $this->wilayahController->getKecamatan($data['kota_kab_id']);
         $data['kelurahans'] = $this->wilayahController->getKelurahan($data['kecamatan_id']);
-        $data['datas'] = $this->getListTps($data['provinsi_id'], $data['kota_kab_id'], $data['kecamatan_id'], $data['kelurahan_id']);
+        $data['datas'] = $this->getListTps($data['kota_kab_id'], $data['kecamatan_id'], $data['kelurahan_id']);
         $data['method'] = 'post';
 
         if ($flag == 'error') {
@@ -88,7 +97,7 @@ class TpsController extends Controller
 
     public function storeTps(WilayahRequest $data)
     {
-        $countTPS = count($this->getListTps($data['provinsi_id'], $data['kota_kab_id'], $data['kecamatan_id'], $data['kelurahan_id']));
+        $countTPS = count($this->getListTps($data['kota_kab_id'], $data['kecamatan_id'], $data['kelurahan_id']));
 
         if ($countTPS < 9) {
             $tps = '0' . $countTPS + 1;
@@ -144,14 +153,28 @@ class TpsController extends Controller
     {
         $user              = Auth::user();
         $tps               = $this->getTpsByUser($user);
-        $data["datas"]     = $this->getListAntrean($tps->id);
+        $data_penduduk     = $this->getListAntrean($tps->id);
+
+        $iterator = 0;
+        $data['wait']  = [];
+        $data['bilik'] = [];
+        for ($i=0; $i < count($data_penduduk); $i++) { 
+            if ($data_penduduk[$i]->antrean != '-') {
+                $data['bilik'][$iterator] = $data_penduduk[$i];
+                $iterator += 1;
+            } else {
+                $data['wait'][$i] = $data_penduduk[$i];
+            }
+        }
+
         $data["jumlah"]    = $tps->jumlah;
 
         return view('ppl.tps.antrean', $data);
     }
     
-    public function getListTps($provinsi_id, $kota_kab_id, $kecamatan_id, $kelurahan_id)
+    public function getListTps($kota_kab_id, $kecamatan_id, $kelurahan_id)
     {
+        $provinsi_id = $this->wilayahController->getKotaKabById($kota_kab_id)->provinsi_id;
         return Tps::where('provinsi_id', $provinsi_id)->where('kota_kab_id', $kota_kab_id)->where('kecamatan_id', $kecamatan_id)->where('kelurahan_id', $kelurahan_id)->get();
     }
 
@@ -174,7 +197,7 @@ class TpsController extends Controller
 
     public function getListAntrean($tps_id)
     {
-        return Data_penduduk::where('tps_id', $tps_id)->where('status', 1)->get();
+        return Data_penduduk::where('tps_id', $tps_id)->where('status', 1)->orderBy('antrean')->orderBy('updated_at')->get();
     }
 
     public function getListSudah($tps_id)

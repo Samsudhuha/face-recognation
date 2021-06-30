@@ -15,18 +15,26 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $users = [
-            [
-                'username'  => 'KPU010010000001',
-                'password'  => Hash::make('password'),
-                'kota_kab'  => '-',
-                'kecamatan' => '-',
-                'kelurahan' => '-',
-                'role' => '01'
-            ]
-        ];
-        for ($i = 0; $i < count($users); $i++) {
-            User::create($users[$i]);
+        $j = 0;
+        for ($i = 1; $i < 515; $i++) {
+            if ($i < 10) {
+                $j = '00' . $i;
+            } elseif ($i < 100) {
+                $j = '0' . $i;
+            } else {
+                $j = $i;
+            }
+            $username = [
+                [
+                    'username'  => 'KPU' . $j,
+                    'password'  => Hash::make('password'),
+                    'kota_kab'  => '-',
+                    'kecamatan' => '-',
+                    'kelurahan' => '-',
+                    'role' => '01'
+                ]
+            ];
+            User::create($username[0]);
         }
     }
 }

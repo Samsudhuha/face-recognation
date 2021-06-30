@@ -60,34 +60,12 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Provinsi</label>
-                                    <select name="provinsi_id" class="form-control-lg select2" style="width: 100%;">
-                                        <option disabled selected>Pilih Provinsi</option>
-                                        @foreach($provincies as $provinsi)
-                                            @if($method == 'post')
-                                                <option value="{{ $provinsi->id }}" @if($provinsi->id == $provinsi_id) selected @endif>{{ $provinsi->nama }}</option>
-                                            @else
-                                                <option value="{{ $provinsi->id }}">{{ $provinsi->nama }}</option>
-                                            @endif
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
                                     <label>Kota / Kabupaten</label>
                                     <select name="kota_kab_id" class="form-control-lg select2" style="width: 100%;">
-                                        <option disabled selected>Pilih Kota / Kabupaten</option>
-                                        @if($method == 'post')
-                                            @foreach($kota_kabs as $kota_kab)
-                                                <option value="{{ $kota_kab->id }}" @if($kota_kab->id == $kota_kab_id) selected @endif>{{ $kota_kab->nama }}</option>
-                                            @endforeach
-                                        @endif
+                                        <option value="{{ $kota->id }}">{{ $kota->nama }}</option>
                                     </select>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Kecamatan</label>
@@ -97,10 +75,16 @@
                                             @foreach($kecamatans as $kecamatan)
                                                 <option value="{{ $kecamatan->id }}" @if($kecamatan->id == $kecamatan_id) selected @endif>{{ $kecamatan->nama }}</option>
                                             @endforeach
+                                        @else
+                                            @foreach($kecamatans as $kecamatan)
+                                                <option value="{{ $kecamatan->id }}">{{ $kecamatan->nama }}</option>
+                                            @endforeach
                                         @endif
                                     </select>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Kelurahan</label>
@@ -114,8 +98,6 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>TPS</label>
@@ -172,7 +154,7 @@
                                             <div class="modal-content">
                                                 <center>
                                                     <div class="modal-header">
-                                                        <h4 class="modal-title">Menghapus Data Mata Kuliah</h4>
+                                                        <h4 class="modal-title">Menghapus Data Penduduk</h4>
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
@@ -199,6 +181,7 @@
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h4 class="modal-title">Menambah Data Penduduk</h4>
+                                        <a href="/kpu/penduduk/export" class="btn btn-secondary" style="margin-left: 10px">Export Tamplate Excel</a>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
@@ -236,13 +219,46 @@
                                         </div>
                                         <div class="modal-footer justify-content-between">
                                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                            <button class="btn btn-success" type="submit"> Tambah TPS</button>
+                                            <div>
+                                                <button type="button" class="btn btn-primary mr-5" data-toggle="modal" data-target="#importExcel">
+                                                    IMPORT EXCEL
+                                                </button>
+                                                <button class="btn btn-success" type="submit"> Tambah Data Penduduk</button>
+                                            </div>
                                         </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <!-- Modal Import Excel -->
+            <div class="modal fade" id="importExcel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <form method="post" action="/kpu/penduduk/import" enctype="multipart/form-data">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Import Excel</h5>
+                            </div>
+                            <div class="modal-body">
+                                {{ csrf_field() }}
+                                <input type="text" name="provinsi_id" value="{{$provinsi_id}}" hidden>
+                                <input type="text" name="kota_kab_id" value="{{$kota_kab_id}}" hidden>
+                                <input type="text" name="kecamatan_id" value="{{$kecamatan_id}}" hidden>
+                                <input type="text" name="kelurahan_id" value="{{$kelurahan_id}}" hidden>
+                                <input type="text" name="tps_id" value="{{$tps_id}}" hidden>
+                                <label>Pilih file excel</label>
+                                <div class="form-group">
+                                    <input type="file" name="file" required="required" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Import</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
             @endif
@@ -255,48 +271,6 @@
 @section('custom-js')
 <!-- Get List Dropdown -->
 <script type="text/javascript">
-
-    // Kota / Kabupaten
-    jQuery(document).ready(function() {
-        jQuery('select[name="provinsi_id"]').on('change', function() {
-            var provinsiID = jQuery(this).val();
-            if (provinsiID) {
-                jQuery.ajax({
-                    url: '/dropdownlist/getkotakab/' + provinsiID,
-                    type: "GET",
-                    dataType: "json",
-                    success: function(data) {
-                        jQuery('select[name="kota_kab_id"]').empty();
-                        $('select[name="kota_kab_id"]').append('<option disabled selected>Pilih Kota / Kabupaten</option>');
-                        jQuery.each(data, function(key, value) {
-                            $('select[name="kota_kab_id"]').append('<option value="' + value['id'] + '">' + value['nama'] + '</option>');
-                        });
-                    }
-                });
-            }
-        });
-    });
-
-    // Kecamatan
-    jQuery(document).ready(function() {
-        jQuery('select[name="kota_kab_id"]').on('change', function() {
-            var KotaKabID = jQuery(this).val();
-            if (KotaKabID) {
-                jQuery.ajax({
-                    url: '/dropdownlist/getkecamatan/' + KotaKabID,
-                    type: "GET",
-                    dataType: "json",
-                    success: function(data) {
-                        jQuery('select[name="kecamatan_id"]').empty();
-                        $('select[name="kecamatan_id"]').append('<option disabled selected>Pilih Kecamatan</option>');
-                        jQuery.each(data, function(key, value) {
-                            $('select[name="kecamatan_id"]').append('<option value="' + value['id'] + '">' + value['nama'] + '</option>');
-                        });
-                    }
-                });
-            }
-        });
-    });
 
     // Kelurahan
     jQuery(document).ready(function() {
@@ -322,13 +296,12 @@
     // Tps
     jQuery(document).ready(function() {
         jQuery('select[name="kelurahan_id"]').on('change', function() {
-            var provinsiID = jQuery('select[name="provinsi_id"]').val();
             var kotaKabID = jQuery('select[name="kota_kab_id"]').val();
             var kecamatanID = jQuery('select[name="kecamatan_id"]').val();
             var kelurahanID = jQuery(this).val();
-            if (kelurahanID && provinsiID && kotaKabID && kecamatanID) {
+            if (kelurahanID && kotaKabID && kecamatanID) {
                 jQuery.ajax({
-                    url: '/dropdownlist/gettps/' + provinsiID + '/' + kotaKabID + '/' + kecamatanID + '/' + kelurahanID,
+                    url: '/dropdownlist/gettps/' + kotaKabID + '/' + kecamatanID + '/' + kelurahanID,
                     type: "GET",
                     dataType: "json",
                     success: function(data) {

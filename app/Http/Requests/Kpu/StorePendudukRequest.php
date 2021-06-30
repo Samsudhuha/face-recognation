@@ -30,7 +30,7 @@ class StorePendudukRequest extends FormRequest
             'kelurahan_id' => 'required',
             'nama'         => 'required',
             'nik'          => 'required|integer|unique:data_penduduks,nik|digits:16',
-            'kk'           => 'required|integer|unique:data_penduduks,kk|digits:16',
+            'kk'           => 'required|integer|digits:16',
             'tps_id'       => 'required',
         ];
     }

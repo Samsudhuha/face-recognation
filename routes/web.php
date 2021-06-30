@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FaceRecognationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\PendudukController;
@@ -36,7 +37,9 @@ Route::middleware(['auth'])->group(function () {
             });
             Route::prefix('penduduk')->group(function () {
                 Route::get('/', [PendudukController::class, 'getPenduduk']);
+                Route::get('/export', [PendudukController::class, 'exportPenduduk']);
                 Route::post('/', [PendudukController::class, 'postPenduduk']);
+                Route::post('/import', [PendudukController::class, 'importPenduduk']);
                 Route::post('/store', [PendudukController::class, 'storePenduduk']);
             });
             Route::prefix('monitoring')->group(function () {
@@ -61,6 +64,12 @@ Route::middleware(['auth'])->group(function () {
             Route::prefix('monitoring')->group(function () {
                 Route::get('/pemilu', [MonitoringController::class, 'getMonitoringPemilu']);
             });
+            Route::prefix('face-recognation')->group(function () {
+                Route::get('/', [FaceRecognationController::class, 'getFaceRecognation']);
+                Route::get('/akhir/{id}', [FaceRecognationController::class, 'getFaceRecognationAkhir']);
+                Route::post('/awal', [FaceRecognationController::class, 'postFaceRecognationAwal']);
+                Route::post('/akhir', [FaceRecognationController::class, 'postFaceRecognationAkhir']);
+            });
         });
     });
 
@@ -68,6 +77,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/getkotakab/{provinsi_id}', [WilayahController::class, 'getKotaKab']);
         Route::get('/getkecamatan/{kota_kab_id}', [WilayahController::class, 'getKecamatan']);
         Route::get('/getkelurahan/{kecamatan_id}', [WilayahController::class, 'getKelurahan']);
-        Route::get('/gettps/{provinsi_id}/{kota_kab_id}/{kecamatan_id}/{kelurahan_id}', [TpsController::class, 'getListTps']);
+        Route::get('/gettps/{kota_kab_id}/{kecamatan_id}/{kelurahan_id}', [TpsController::class, 'getListTps']);
     });
 });

@@ -90,8 +90,8 @@
                                     </td>
                                 @endif
                                 <td>
-                                    @if (Storage::disk('public')->exists($data["nik"] . 'jpg')) 
-                                        <img src="{{ url($data['nik']) }}" alt="your image" style="height: 200px; width:200px" />
+                                    @if (Storage::disk('public')->exists('image/' . $data["nik"] . '/image1.jpg')) 
+                                        <img src="{{ url('storage/image/' . $data['nik'] . '/image1.jpg') }}" alt="your image" style="height: 200px; width:200px" />
                                     @else
                                         <img src="{{ url('img/default.png') }}" alt="your image" style="height: 200px; width:200px" />
                                     @endif

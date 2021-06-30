@@ -24,7 +24,6 @@ class WilayahRequest extends FormRequest
     public function rules()
     {
         return [
-            'provinsi_id'  => 'required',
             'kota_kab_id'  => 'required',
             'kecamatan_id' => 'required',
             'kelurahan_id' => 'required',
@@ -39,7 +38,6 @@ class WilayahRequest extends FormRequest
     public function messages()
     {
         return [
-            'provinsi_id.required'  => 'Pilih Provinsi Terlebih Dahulu',
             'kota_kab_id.required'  => 'Pilih Kota / Kabupaten Terlebih Dahulu',
             'kecamatan_id.required' => 'Pilih Kecamatan Terlebih Dahulu',
             'kelurahan_id.required' => 'Pilih Kelurahan Terlebih Dahulu',

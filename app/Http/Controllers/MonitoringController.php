@@ -51,8 +51,17 @@ class MonitoringController extends Controller
 
     public function getMonitoringPemiluKPU()
     {
-        $data['provincies'] = $this->wilayahController->getProvinsi();
-        $data['method'] = 'get';
+        $user               = Auth::user();
+        $kota_kab_id        = substr($user->username, 3, 3);
+        if (substr($kota_kab_id, 0, 2) == '00') {
+            $kota_kab_id = substr($kota_kab_id, 2, 1);
+        } elseif (substr($kota_kab_id, 0, 1) == '0') {
+            $kota_kab_id = substr($kota_kab_id, 1, 2);
+        }
+
+        $data['kota']      = $this->wilayahController->getKotaKabById($kota_kab_id);
+        $data['kecamatans'] = $this->wilayahController->getKecamatan($kota_kab_id);
+        $data['method']     = 'get';
 
         return view('kpu.monitoring.pemilu', $data);
     }
@@ -60,11 +69,10 @@ class MonitoringController extends Controller
 
     public function postMonitoringPemilu(GetPendudukRequest $data)
     {
-        $data['provincies'] = $this->wilayahController->getProvinsi();
-        $data['kota_kabs']  = $this->wilayahController->getKotaKab($data['provinsi_id']);
+        $data['kota']       = $this->wilayahController->getKotaKabById($data['kota_kab_id']);
         $data['kecamatans'] = $this->wilayahController->getKecamatan($data['kota_kab_id']);
         $data['kelurahans'] = $this->wilayahController->getKelurahan($data['kecamatan_id']);
-        $data['tpss']       = $this->tpsController->getListTps($data['provinsi_id'], $data['kota_kab_id'], $data['kecamatan_id'], $data['kelurahan_id']);
+        $data['tpss']       = $this->tpsController->getListTps($data['kota_kab_id'], $data['kecamatan_id'], $data['kelurahan_id']);
         $data['datas']      = $this->pendudukController->getListPenduduk($data['tps_id']);
         $data['method']     = 'post';
         $data["total"]      = count($this->pendudukController->getListPenduduk($data['tps_id']));
