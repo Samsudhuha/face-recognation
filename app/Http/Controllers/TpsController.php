@@ -168,7 +168,14 @@ class TpsController extends Controller
         }
 
         $data["jumlah"]    = $tps->jumlah;
-
+        
+        if ($data["jumlah"] > count($data["bilik"])) {
+            for ($i = count($data["bilik"]); $i < $data["jumlah"]; $i++) { 
+                $data["bilik"][$i]              = new $data["bilik"][0];
+                $data["bilik"][$i]["antrean"]   = 0;
+            }
+        }
+        
         return view('ppl.tps.antrean', $data);
     }
     

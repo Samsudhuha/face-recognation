@@ -90,7 +90,7 @@
                                             <center>
                                                 <div id="my_camera"></div>
                                                 <br>
-                                                <input type=button value="Take Snapshot" onClick="take_snapshot()"
+                                                <input type=button value="Photo" onClick="take_snapshot(1)"
                                                     class="snapshot">
                                                 <br>
                                                 <br>
@@ -175,13 +175,23 @@
     <!-- Code to handle taking the snapshot and displaying it locally -->
     <script language="JavaScript">
         let index = 0;
+        var delayInMilliseconds = 1000; //1 second
 
         function myFunc(variable, data) {
             var s = document.getElementById(variable);
             s.value = data;
         }
 
-        function take_snapshot() {
+        function take_snapshot(flag) {
+            if (flag == 1) {
+                index = 0;
+            }
+            Webcam.set({
+                width: 320,
+                height: 240,
+                image_format: 'jpeg',
+                jpeg_quality: 90
+            });
             // take snapshot and get image data
             Webcam.snap(function(data_uri) {
                 // display results in page
@@ -192,6 +202,12 @@
                     '<img src="' + data_uri + '"/>';
                 index += 1;
                 myFunc("file" + index, data_uri);
+
+                if (index != 5) {
+                    setTimeout(function() {
+                        take_snapshot(0);
+                    }, delayInMilliseconds);
+                }
             });
         }
 

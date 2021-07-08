@@ -72,18 +72,12 @@
                                     <br>
                                 </center>
                                 <div class="row">
-                                    <div id="results0" class="col-md-4"></div>
+                                    <div class="col-md-4"></div>
                                     <div id="results1" class="col-md-4"></div>
-                                    <div id="results2" class="col-md-4"></div>
+                                    <div class="col-md-4"></div>
                                 </div>
                                 <br>
                                 <br>
-                                <div class="row">
-                                    <div class="col-md-2"></div>
-                                    <div id="results3" class="col-md-4"></div>
-                                    <div id="results4" class="col-md-4"></div>
-                                    <div class="col-md-2"></div>
-                                </div>
                                 <form action="/ppl/face-recognation/akhir" method="POST" enctype="multipart/form-data">
                                     {{ csrf_field() }}
                                     <div class="row">
@@ -154,10 +148,14 @@
                 if (index == 5) {
                     return;
                 }
+                if (index == 1) {
                 document.getElementById('results' + index).innerHTML =
                     '<img src="' + data_uri + '"/>';
+                }
                 index += 1;
+                    
                 myFunc("file" + index, data_uri);
+                take_snapshot();
             });
         }
 
