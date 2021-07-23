@@ -60,6 +60,7 @@
                         $no = 0;
                     @endphp
                     @for($i = 0; $i < $jumlah; $i++)
+                        @if(0 != count($bilik))
                         @if($i + 1 == $bilik[$no]->antrean)
                             <div class="col-12 col-sm-6 col-md-4 text-center">
                                 <a href="/ppl/face-recognation/akhir/{{$bilik[$no]["nik"]}}">
@@ -91,7 +92,20 @@
                                 </div>
                             </div>
                         @endif
-                        @endfor
+                        @else
+                            <div class="col-12 col-sm-6 col-md-4 text-center">
+                                <div class="card bg-light">
+                                    <div class="card-header  border-bottom-0">
+                                        Bilik {{ $i+1}}
+                                    </div>
+                                    <div class="card-body">
+                                        <i class="fas fa-home" style="font-size:100px"></i>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    @endfor
                     </div>
                     <br>
                     <br>

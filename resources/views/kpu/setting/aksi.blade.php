@@ -25,7 +25,8 @@
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="/home">Beranda</a></li>
-                    <li class="breadcrumb-item active">TPS - {{ substr(Auth::user()->username, 13, 2) }} </li>
+                    <li class="breadcrumb-item">Setting</li>
+                    <li class="breadcrumb-item active">Aksi</li>
                 </ol>
             </div>
         </div>
@@ -52,39 +53,41 @@
             @endif
             <div class="card card-default">
                 <div class="card-header">
-                    <h3 class="card-title">Data TPS</h3>
+                    <h3 class="card-title">Pengaturan TPS</h3>
                 </div>
-                <form action="/ppl/tps/update" method="post">
+                <form action="/kpu/setting/aksi" method="post">
                     {{ csrf_field() }}
                     <div class="card-body pb-0">
                         <div class="row">
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                 <div class="header">
                                     <div class="row">
-                                        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
-                                            <h5>TPS</h5>
+                                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                            <h5>Aksi TPS</h5>
                                         </div>
-                                        <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
-                                            <h5>: {{ $data->tps }} </h5>
+                                        <div class="old">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <h5>: 
+                                                    @if (Auth::user()->role == '01')
+                                                        Pencoblosan Pemilihan Umum
+                                                    @else
+                                                        Pendaftaran Pemilihan Umum
+                                                    @endif
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="new">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <h5>:                                     
+                                                    <select name="aksi" class="form-control-lg select2" style="width: 100%;">
+                                                        <option value="pencoblosan" @if (Auth::user()->role == '01') selected @endif>Pencoblosan Pemilihan Umum</option>
+                                                        <option value="pendaftaran" @if (Auth::user()->role == '00') selected @endif>Pendaftaran Pemilihan Umum</option>
+                                                    </select> 
+                                                </h5>
+                                            </div>
                                         </div>
                                     </div>
                                     <br>
-                                    <div class="row">
-                                        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
-                                            <h5>Jumlah Bilik</h5>
-                                        </div>
-                                        <div class="new">
-                                            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
-                                                <input type="text" name="id" class="form-control" hidden value="{{$data->id}}" />
-                                                <input type="text" name="jumlah" class="form-control" value="{{$data->jumlah}}" />
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
-                                            <div class="old">
-                                                <h5>: {{ $data->jumlah }} </h5>
-                                            </div>
-                                        </div>
-                                    </div>
                                     <br>
                                     <br>
                                 </div>

@@ -88,6 +88,10 @@
                                     <td style="background-color: greenyellow">
                                         Sudah Memilih
                                     </td>
+                                @elseif($data["status"] == -1)
+                                    <td style="background-color: grey">
+                                        Tidak Mendaftar Pemilihan
+                                    </td>
                                 @endif
                                 <td>
                                     @if (Storage::disk('public')->exists('image/' . $data["nik"] . '/image1.jpg')) 

@@ -58,7 +58,7 @@
                     <div class="card-body pb-0">
                         <div class="row">
                             <div class="col-12 col-sm-6 col-md-3 text-center">
-                                <a href="/admin/taksonomi-bloom">
+                                <a href="#">
                                     <div class="card bg-light">
                                         <div class="card-header text-muted border-bottom-0">
                                             Total Penduduk
@@ -70,7 +70,7 @@
                                 </a>
                             </div>
                             <div class="col-12 col-sm-6 col-md-3 text-center">
-                                <a href="/admin/taksonomi-bloom">
+                                <a href="#">
                                     <div class="card bg-light">
                                         <div class="card-header text-muted border-bottom-0">
                                             Sudah Memilih
@@ -82,7 +82,7 @@
                                 </a>
                             </div>
                             <div class="col-12 col-sm-6 col-md-3 text-center">
-                                <a href="/admin/taksonomi-bloom">
+                                <a href="#">
                                     <div class="card bg-light">
                                         <div class="card-header text-muted border-bottom-0">
                                             Sedang Memilih
@@ -94,13 +94,25 @@
                                 </a>
                             </div>
                             <div class="col-12 col-sm-6 col-md-3 text-center">
-                                <a href="/admin/taksonomi-bloom">
+                                <a href="#">
                                     <div class="card bg-light">
                                         <div class="card-header text-muted border-bottom-0">
                                             Belum Memilih
                                         </div>
                                         <div class="card-body">
                                             <h4>{{$belum}}</h4>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 text-center">
+                                <a href="#">
+                                    <div class="card bg-light">
+                                        <div class="card-header text-muted border-bottom-0">
+                                            Tidak Mendaftar
+                                        </div>
+                                        <div class="card-body">
+                                            <h4>{{$tidak}}</h4>
                                         </div>
                                     </div>
                                 </a>

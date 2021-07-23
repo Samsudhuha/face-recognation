@@ -31,6 +31,7 @@ class PendudukController extends Controller
     public function getPenduduk()
     {
         switch (Auth::user()->role) {
+            case '00':
             case '01':
                 return $this->getPendudukKPU();
                 break;
@@ -95,7 +96,7 @@ class PendudukController extends Controller
             'kk'        => $data['kk'],
             'antrean'   => '-',
             'tps_id'    => $data['tps_id'],
-            'status'    => 0
+            'status'    => -1
         ];
         
         Data_penduduk::create($dataPenduduk);

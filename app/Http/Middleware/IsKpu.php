@@ -17,7 +17,7 @@ class IsKpu
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::user()->role == '01') {
+        if (Auth::user()->role == '01' || Auth::user()->role == '00') {
             return $next($request);
         }
         return redirect('/home');

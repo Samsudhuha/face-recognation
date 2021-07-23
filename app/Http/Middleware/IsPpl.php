@@ -17,7 +17,7 @@ class IsPpl
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::user()->role == '02') {
+        if (Auth::user()->role == '02' || Auth::user()->role == '03') {
             return $next($request);
         }
         return redirect('/home');

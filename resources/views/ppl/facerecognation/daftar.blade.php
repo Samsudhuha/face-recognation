@@ -95,13 +95,25 @@
                                                 <br>
                                                 <br>
                                                 <br>
-                                                <div id="results0" class="col-md-4"></div>
                                             </center>
+                                            <div class="row">
+                                                <div id="results0" class="col-md-4"></div>
+                                                <div id="results1" class="col-md-4"></div>
+                                                <div id="results2" class="col-md-4"></div>
+                                            </div>
+                                            <br>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-md-2"></div>
+                                                <div id="results3" class="col-md-4"></div>
+                                                <div id="results4" class="col-md-4"></div>
+                                                <div class="col-md-2"></div>
+                                            </div>
                                             <button class="btn btn-primary" onclick="stepper.next()">Next</button>
                                         </div>
                                         <div id="information-part" class="content" role="tabpanel"
                                             aria-labelledby="information-part-trigger">
-                                            <form action="/ppl/face-recognation/awal" method="POST"
+                                            <form action="/ppl/face-recognation/daftar" method="POST"
                                                 enctype="multipart/form-data">
                                                 {{ csrf_field() }}
                                                 <div class="row">
@@ -115,6 +127,8 @@
                                                         <label for="exampleInputPassword1">NIK</label>
                                                         <input type="text" class="form-control" id="exampleInputPassword1"
                                                             name="nik" required>
+                                                        <label for="exampleInputPassword1">Nomor Whatsapp</label>
+                                                        <input type="text" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required name="phone"/>
                                                     </div>
                                                 </div>
                                                 <button type="button" class="btn btn-secondary"
@@ -163,6 +177,7 @@
     <!-- Code to handle taking the snapshot and displaying it locally -->
     <script language="JavaScript">
         let index = 0;
+        var delayInMilliseconds = 1000; //1 second
 
         function myFunc(variable, data) {
             var s = document.getElementById(variable);
@@ -173,6 +188,13 @@
             if (flag == 1) {
                 index = 0;
             }
+            Webcam.set({
+                width: 320,
+                height: 240,
+                image_format: 'jpeg',
+                jpeg_quality: 90
+            });
+            // take snapshot and get image data
             Webcam.snap(function(data_uri) {
                 // display results in page
                 if (index == 5) {
@@ -184,7 +206,9 @@
                 myFunc("file" + index, data_uri);
 
                 if (index != 5) {
-                    take_snapshot(0);
+                    setTimeout(function() {
+                        take_snapshot(0);
+                    }, delayInMilliseconds);
                 }
             });
         }

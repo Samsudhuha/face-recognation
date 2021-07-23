@@ -25,11 +25,12 @@ class FaceRecognationRequest extends FormRequest
     {
         return [
             'file1'   => 'required',
-            'file2'   => 'required',
-            'file3'   => 'required',
-            'file4'   => 'required',
-            'file5'   => 'required',
+            'file2'   => '',
+            'file3'   => '',
+            'file4'   => '',
+            'file5'   => '',
             'nik'     => 'required|integer|digits:16',
+            'phone'   => '',
         ];
     }
 
@@ -41,11 +42,6 @@ class FaceRecognationRequest extends FormRequest
     public function messages()
     {
         return [
-            'file1.required'       => 'Foto Harus Sebanyak 5 Kali',
-            'file2.required'       => 'Foto Harus Sebanyak 5 Kali',
-            'file3.required'       => 'Foto Harus Sebanyak 5 Kali',
-            'file4.required'       => 'Foto Harus Sebanyak 5 Kali',
-            'file5.required'       => 'Foto Harus Sebanyak 5 Kali',
             'nik.digits'           => 'Panjang NIK Tidak Sama Dengan 16',
             'nik.integer'          => 'NIK Harus Berupa Angka',
         ];

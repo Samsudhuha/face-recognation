@@ -6,6 +6,7 @@ use App\Http\Controllers\FaceRecognationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\PendudukController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TpsController;
 use App\Http\Controllers\WilayahController;
 use App\Models\Tps;
@@ -46,6 +47,10 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/pemilu', [MonitoringController::class, 'getMonitoringPemilu']);
                 Route::post('/pemilu', [MonitoringController::class, 'postMonitoringPemilu']);
             });
+            Route::prefix('setting')->group(function () {
+                Route::get('/aksi', [SettingController::class, 'getSettingAksi']);
+                Route::post('/aksi', [SettingController::class, 'postSettingAksi']);
+            });
         });
     });
 
@@ -66,7 +71,9 @@ Route::middleware(['auth'])->group(function () {
             });
             Route::prefix('face-recognation')->group(function () {
                 Route::get('/', [FaceRecognationController::class, 'getFaceRecognation']);
+                Route::get('/daftar', [FaceRecognationController::class, 'daftarFaceRecognation']);
                 Route::get('/akhir/{id}', [FaceRecognationController::class, 'getFaceRecognationAkhir']);
+                Route::post('/daftar', [FaceRecognationController::class, 'postFaceRecognationDaftar']);
                 Route::post('/awal', [FaceRecognationController::class, 'postFaceRecognationAwal']);
                 Route::post('/akhir', [FaceRecognationController::class, 'postFaceRecognationAkhir']);
             });

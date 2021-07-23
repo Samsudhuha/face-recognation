@@ -52,6 +52,11 @@ class FaceRecognationController extends Controller
         return view('ppl.facerecognation.index');
     }
 
+    public function daftarFaceRecognation()
+    {
+        return view('ppl.facerecognation.daftar');
+    }
+
     public function getFaceRecognationAkhir($id)
     {
         $data['id'] = $id;
@@ -67,12 +72,14 @@ class FaceRecognationController extends Controller
 
         if (!$flag_penduduk) {
             return redirect('/ppl/face-recognation')->withErrors(["error" => "Anda Tidak Dapat Mencoblos Di TPS Ini, Silahkan Memilih Di TPS Yang Sudah Disesuaikan"]);
+        } elseif ($flag_penduduk->status == -1) {
+            return redirect('/ppl/face-recognation')->withErrors(["error" => "Anda Tidak Mendaftar Pemilihan Umum"]);
         } elseif ($flag_penduduk->status == 2) {
             return redirect('/ppl/face-recognation')->withErrors(["error" => "Anda Sudah Mencoblos"]);
         } else {
-            for ($i=1; $i < 6; $i++) { 
+            for ($i=1; $i < 2; $i++) { 
                 $imageFile = $this->uploadImage($request['file' . $i]);
-                $imageFile->storeAs('/public/image/' . $request['nik'], '/image' . $i . '.' . $imageFile->extension());
+                $imageFile->storeAs('/public/predict/image/' . $request['nik'], '/image' . $i . '.' . $imageFile->extension());
             }
 
             $flag_bilik = Data_penduduk::where('tps_id', $tps->id)->orderBy('antrean', 'desc')->first()->antrean;
@@ -95,6 +102,27 @@ class FaceRecognationController extends Controller
             
             Data_penduduk::where('nik', $request['nik'])->where('tps_id', $tps->id)->update(['status' => 1, 'antrean' => $flag_bilik]);
             return redirect('/ppl/face-recognation');
+        }
+    }
+
+    public function postFaceRecognationDaftar(FaceRecognationRequest $request)
+    {
+        $user           = Auth::user();
+        $tps            = $this->tpsController->getTpsByUser($user);
+        $flag_penduduk  = Data_penduduk::where('nik', $request['nik'])->first();
+
+        if (!$flag_penduduk) {
+            return redirect('/ppl/face-recognation/daftar')->withErrors(["error" => "Data NIK Anda Tidak Ada Di Database, Silahkan Hubungi Kantor KPU Pusat"]);
+        } elseif ($flag_penduduk->status == 0) {
+            return redirect('/ppl/face-recognation')->withErrors(["error" => "Anda Sudah Mendaftar"]);
+        } else {
+            for ($i=1; $i < 6; $i++) { 
+                $imageFile = $this->uploadImage($request['file' . $i]);
+                $imageFile->storeAs('/public/upload/image/' . $request['nik'], '/image' . $i . '.' . $imageFile->extension());
+            }
+            
+            Data_penduduk::where('nik', $request['nik'])->update(['status' => 0]);
+            return redirect('/ppl/face-recognation/daftar');
         }
     }
 

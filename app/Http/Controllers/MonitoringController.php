@@ -26,6 +26,7 @@ class MonitoringController extends Controller
     public function getMonitoringPemilu()
     {
         switch (Auth::user()->role) {
+            case '00':
             case '01':
                 return $this->getMonitoringPemiluKPU();
                 break;
@@ -44,6 +45,7 @@ class MonitoringController extends Controller
         $data["total"]     = count($this->pendudukController->getListPenduduk($tps_id));
         $data["sedang"]    = count($this->tpsController->getListAntrean($tps_id));
         $data["sudah"]     = count($this->tpsController->getListSudah($tps_id));
+        $data["tidak"]     = count($this->tpsController->getListTidak($tps_id));
         $data["belum"]     = $data["total"] - $data["sedang"] - $data["sudah"];
 
         return view('ppl.monitoring.pemilu', $data);
@@ -78,6 +80,7 @@ class MonitoringController extends Controller
         $data["total"]      = count($this->pendudukController->getListPenduduk($data['tps_id']));
         $data["sedang"]     = count($this->tpsController->getListAntrean($data['tps_id']));
         $data["sudah"]      = count($this->tpsController->getListSudah($data['tps_id']));
+        $data["tidak"]      = count($this->tpsController->getListTidak($data['tps_id']));
         $data["belum"]      = $data["total"] - $data["sedang"] - $data["sudah"];
 
         return view('kpu.monitoring.pemilu', $data);

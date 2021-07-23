@@ -26,6 +26,7 @@ class TpsController extends Controller
     public function getTPS()
     {
         switch (Auth::user()->role) {
+            case '00':
             case '01':
                 return $this->getTPSKPU();
                 break;
@@ -113,7 +114,7 @@ class TpsController extends Controller
             'kecamatan_id'  => $data['kecamatan_id'],
             'kelurahan_id'  => $data['kelurahan_id'],
             'tps'           => $tps,
-            'jumlah'        => '-'
+            'jumlah'        => 0
         ];
         
         Tps::create($dataTPS);
@@ -169,7 +170,7 @@ class TpsController extends Controller
 
         $data["jumlah"]    = $tps->jumlah;
         
-        if ($data["jumlah"] > count($data["bilik"])) {
+        if ($data["jumlah"] > count($data["bilik"]) && count($data["bilik"]) != 0) {
             for ($i = count($data["bilik"]); $i < $data["jumlah"]; $i++) { 
                 $data["bilik"][$i]              = new $data["bilik"][0];
                 $data["bilik"][$i]["antrean"]   = 0;
@@ -210,5 +211,10 @@ class TpsController extends Controller
     public function getListSudah($tps_id)
     {
         return Data_penduduk::where('tps_id', $tps_id)->where('status', 2)->get();
+    }
+
+    public function getListTidak($tps_id)
+    {
+        return Data_penduduk::where('tps_id', $tps_id)->where('status', -1)->get();
     }
 }

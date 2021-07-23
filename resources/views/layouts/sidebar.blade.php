@@ -12,7 +12,7 @@
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <p>
-                            @if (Auth::user()->role == '01')
+                            @if (Auth::user()->role == '01' || Auth::user()->role == '00')
                                 {{ Auth::user()->username }}
                             @else
                                 {{ Auth::user()->kota_kab }}
@@ -36,6 +36,7 @@
                     </a>
                 </li>
                 @switch(Auth::user()->role)
+                    @case('00')
                     @case('01')
                         <li class="nav-header">Data</li>
                         <li class="nav-item">
@@ -54,6 +55,13 @@
                             <a href="/kpu/monitoring/pemilu" class="nav-link" id='sidebar-kpu-monitoring-pemilu'>
                                 <i class="fas fa-chart-bar"></i>
                                 <p>Monitoring Pemilu</p>
+                            </a>
+                        </li>
+                        <li class="nav-header">pengaturan</li>
+                        <li class="nav-item">
+                            <a href="/kpu/setting/aksi" class="nav-link" id='sidebar-kpu-tps'>
+                                <i class="fas fa-cog"></i>
+                                <p>Pengaturan Aksi</p>
                             </a>
                         </li>
                     @break
@@ -89,6 +97,15 @@
                             <a href="/ppl/antrean" class="nav-link" id='sidebar-ppl-antrean'>
                                 <i class="fas fa-hourglass-half"></i>
                                 <p> Antrean</p>
+                            </a>
+                        </li>
+                    @break
+                    @case('03')
+                        <li class="nav-header">Face Recognation</li>
+                        <li class="nav-item">
+                            <a href="/ppl/face-recognation/daftar" class="nav-link" id='sidebar-ppl-face-recognation'>
+                                <i class="fas fa-camera"></i>
+                                <p>Photo</p>
                             </a>
                         </li>
                     @break

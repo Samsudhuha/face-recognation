@@ -57,66 +57,84 @@
         <div class="card card-solid">
             <div class="card-body pb-0">
                 <div class="row">
-                    <div class="col-12 col-sm-6 col-md-4 text-center">
-                        <a href="/ppl/face-recognation">
-                            <div class="card bg-light">
-                                <div class="card-header text-muted border-bottom-0">
-                                    Face Recognation
+                    @switch(Auth::user()->role)
+                    @case('02')
+                        <div class="col-12 col-sm-6 col-md-4 text-center">
+                            <a href="/ppl/face-recognation">
+                                <div class="card bg-light">
+                                    <div class="card-header text-muted border-bottom-0">
+                                        Face Recognation
+                                    </div>
+                                    <div class="card-body">
+                                        <i class="fas fa-camera" style="font-size:100px"></i>
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <i class="fas fa-camera" style="font-size:100px"></i>
+                            </a>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4 text-center">
+                            <a href="/ppl/penduduk">
+                                <div class="card bg-light">
+                                    <div class="card-header text-muted border-bottom-0">
+                                        Data penduduk
+                                    </div>
+                                    <div class="card-body">
+                                        <i class="fas fa-users" style="font-size:100px"></i>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-12 col-sm-6 col-md-4 text-center">
-                        <a href="/ppl/penduduk">
-                            <div class="card bg-light">
-                                <div class="card-header text-muted border-bottom-0">
-                                    Data penduduk
+                            </a>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4 text-center">
+                            <a href="/ppl/monitoring/pemilu">
+                                <div class="card bg-light">
+                                    <div class="card-header text-muted border-bottom-0">
+                                        Data Monitoring Pemilu
+                                    </div>
+                                    <div class="card-body">
+                                        <i class="fas fa-chart-bar" style="font-size:100px"></i>
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <i class="fas fa-users" style="font-size:100px"></i>
+                            </a>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4 text-center">
+                            <a href="/ppl/tps">
+                                <div class="card bg-light">
+                                    <div class="card-header text-muted border-bottom-0">
+                                        Manajemen TPS
+                                    </div>
+                                    <div class="card-body">
+                                        <i class="fas fa-home" style="font-size:100px"></i>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-12 col-sm-6 col-md-4 text-center">
-                        <a href="/ppl/monitoring/pemilu">
-                            <div class="card bg-light">
-                                <div class="card-header text-muted border-bottom-0">
-                                    Data Monitoring Pemilu
+                            </a>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4 text-center">
+                            <a href="/ppl/antrean">
+                                <div class="card bg-light">
+                                    <div class="card-header text-muted border-bottom-0">
+                                        Manajemen Antrean
+                                    </div>
+                                    <div class="card-body">
+                                        <i class="fas fa-hourglass-half" style="font-size:100px"></i>
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <i class="fas fa-chart-bar" style="font-size:100px"></i>
+                            </a>
+                        </div>
+                    @break
+                    @case('03')
+                        <div class="col-12 col-sm-6 col-md-4 text-center">
+                            <a href="/ppl/face-recognation/daftar">
+                                <div class="card bg-light">
+                                    <div class="card-header text-muted border-bottom-0">
+                                        Face Recognation
+                                    </div>
+                                    <div class="card-body">
+                                        <i class="fas fa-camera" style="font-size:100px"></i>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-12 col-sm-6 col-md-4 text-center">
-                        <a href="/ppl/tps">
-                            <div class="card bg-light">
-                                <div class="card-header text-muted border-bottom-0">
-                                    Manajemen TPS
-                                </div>
-                                <div class="card-body">
-                                    <i class="fas fa-home" style="font-size:100px"></i>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-12 col-sm-6 col-md-4 text-center">
-                        <a href="/ppl/antrean">
-                            <div class="card bg-light">
-                                <div class="card-header text-muted border-bottom-0">
-                                    Manajemen Antrean
-                                </div>
-                                <div class="card-body">
-                                    <i class="fas fa-hourglass-half" style="font-size:100px"></i>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
+                            </a>
+                        </div>
+                    @break
+                    @endswitch
                 </div>
             </div>
         </div>
