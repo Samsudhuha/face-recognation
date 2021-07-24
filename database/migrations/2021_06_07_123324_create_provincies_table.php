@@ -27,6 +27,6 @@ class CreateProvinciesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kota_kabs');
+        Schema::dropIfExists('provincies');
     }
 }
