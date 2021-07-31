@@ -105,7 +105,7 @@ class FaceRecognationController extends Controller
             }
 
             //API CALL
-            $data = array('id' => $request['nik'],'image_name' => 'image' . $i . '.' . $imageFile->extension());
+            $data = array('id' => $request['nik'],'image_name' => 'image1.' . $imageFile->extension());
             $response = $this->apiCall($data, '/recognition/predictById');
 
             if ($response[1]!=200){
