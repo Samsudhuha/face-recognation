@@ -23,6 +23,27 @@ class FaceRecognationController extends Controller
         $this->tpsController        = $tpsController;
     }
 
+    private function apiCall($data,$route){
+        $curl = curl_init();
+        
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://tpspintar.com/face'.$route,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $data,
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        return $response;
+    }
+
     private function uploadImage($image)
     {
         $base64File = $image;
@@ -82,6 +103,14 @@ class FaceRecognationController extends Controller
                 $imageFile->storeAs('/public/predict/image/' . $request['nik'], '/image' . $i . '.' . $imageFile->extension());
             }
 
+            //API CALL
+            $data = array('id' => $request['nik'],'image_name' => 'image' . $i . '.' . $imageFile->extension());
+            $response = $this->apiCall($data, '/recognition/predictById');
+
+            if ($response['curl_error'] OR $response['http_code']!='200'){
+                return redirect('/ppl/face-recognation')->withErrors(["error" => "NIK dan Gambar tidak serasi"]);
+            }
+
             $flag_bilik = Data_penduduk::where('tps_id', $tps->id)->orderBy('antrean', 'desc')->first()->antrean;
             if ($flag_bilik == '-') {
                 $flag_bilik = 0;
@@ -121,6 +150,14 @@ class FaceRecognationController extends Controller
                 $imageFile->storeAs('/public/upload/image/' . $request['nik'], '/image' . $i . '.' . $imageFile->extension());
             }
             
+            //API CALL
+            $data = array('id' => $request['nik']);
+            $response = $this->apiCall($data, '/recognition/trainById');
+
+            if ($response['curl_error'] OR $response['http_code']!='200'){
+                return redirect('/ppl/face-recognation')->withErrors(["error" => "Terdapat gangguan, Silahkan coba lagi"]);
+            }
+
             Data_penduduk::where('nik', $request['nik'])->update(['status' => 0]);
             return redirect('/ppl/face-recognation/daftar');
         }
