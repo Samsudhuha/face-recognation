@@ -39,9 +39,10 @@ class FaceRecognationController extends Controller
         ));
 
         $response = curl_exec($curl);
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
         curl_close($curl);
-        return $response;
+        return [$response, $httpcode];
     }
 
     private function uploadImage($image)
@@ -107,7 +108,7 @@ class FaceRecognationController extends Controller
             $data = array('id' => $request['nik'],'image_name' => 'image' . $i . '.' . $imageFile->extension());
             $response = $this->apiCall($data, '/recognition/predictById');
 
-            if ($response['curl_error'] OR $response['http_code']!='200'){
+            if ($response[1]!=200){
                 return redirect('/ppl/face-recognation')->withErrors(["error" => "NIK dan Gambar tidak serasi"]);
             }
 
@@ -154,7 +155,7 @@ class FaceRecognationController extends Controller
             $data = array('id' => $request['nik']);
             $response = $this->apiCall($data, '/recognition/trainById');
 
-            if ($response['curl_error'] OR $response['http_code']!='200'){
+            if ($response[1]!=200){
                 return redirect('/ppl/face-recognation')->withErrors(["error" => "Terdapat gangguan, Silahkan coba lagi"]);
             }
 
