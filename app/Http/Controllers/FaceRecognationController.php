@@ -15,12 +15,55 @@ use Symfony\Component\HttpFoundation\File\File;
 class FaceRecognationController extends Controller
 {
     protected $tpsController;
+    protected $wilayahController;
 
     public function __construct(
+        WilayahController $wilayahController,
         TpsController $tpsController
         )
     {
+        $this->wilayahController    = $wilayahController;
         $this->tpsController        = $tpsController;
+    }
+
+    function apiKirimWaRequest(array $params) {
+        $httpStreamOptions = [
+          'method' => $params['method'] ?? 'GET',
+          'header' => [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . ($params['token'] ?? '')
+          ],
+          'timeout' => 15,
+          'ignore_errors' => true
+        ];
+      
+        if ($httpStreamOptions['method'] === 'POST') {
+          $httpStreamOptions['header'][] = sprintf('Content-Length: %d', strlen($params['payload'] ?? ''));
+          $httpStreamOptions['content'] = $params['payload'];
+        }
+      
+        // Join the headers using CRLF
+        $httpStreamOptions['header'] = implode("\r\n", $httpStreamOptions['header']) . "\r\n";
+      
+        $stream = stream_context_create(['http' => $httpStreamOptions]);
+        $response = file_get_contents($params['url'], false, $stream);
+      
+        // Headers response are created magically and injected into
+        // variable named $http_response_header
+        $httpStatus = $http_response_header[0];
+      
+        preg_match('#HTTP/[\d\.]+\s(\d{3})#i', $httpStatus, $matches);
+      
+        if (! isset($matches[1])) {
+          throw new Exception('Can not fetch HTTP response header.');
+        }
+      
+        $statusCode = (int)$matches[1];
+        if ($statusCode >= 200 && $statusCode < 300) {
+          return ['body' => $response, 'statusCode' => $statusCode, 'headers' => $http_response_header];
+        }
+      
+        throw new Exception($response, $statusCode);
     }
 
     private function apiCall($data,$route){
@@ -131,7 +174,7 @@ class FaceRecognationController extends Controller
             }
             
             Data_penduduk::where('nik', $request['nik'])->where('tps_id', $tps->id)->update(['status' => 1, 'antrean' => $flag_bilik]);
-            return redirect('/ppl/face-recognation');
+            return redirect('/ppl/face-recognation')->with('success', 'Berhasil');
         }
     }
 
@@ -140,11 +183,12 @@ class FaceRecognationController extends Controller
         $user           = Auth::user();
         $tps            = $this->tpsController->getTpsByUser($user);
         $flag_penduduk  = Data_penduduk::where('nik', $request['nik'])->first();
+        $nomor_hp       = '62' . substr($request['phone'], 1);
 
         if (!$flag_penduduk) {
             return redirect('/ppl/face-recognation/daftar')->withErrors(["error" => "Data NIK Anda Tidak Ada Di Database, Silahkan Hubungi Kantor KPU Pusat"]);
         } elseif ($flag_penduduk->status == 0) {
-            return redirect('/ppl/face-recognation')->withErrors(["error" => "Anda Sudah Mendaftar"]);
+            return redirect('/ppl/face-recognation/daftar')->withErrors(["error" => "Anda Sudah Mendaftar"]);
         } else {
             for ($i=1; $i < 6; $i++) { 
                 $imageFile = $this->uploadImage($request['file' . $i]);
@@ -159,8 +203,27 @@ class FaceRecognationController extends Controller
                 return redirect('/ppl/face-recognation')->withErrors(["error" => "Terdapat gangguan, Silahkan coba lagi"]);
             }
 
+            $kota      = $this->wilayahController->getKotaKabById($tps->kota_kab_id)->nama;
+            $kecamatan = $this->wilayahController->getKecamatanById($tps->kecamatan_id)->nama;
+            $kelurahan = $this->wilayahController->getKelurahanById($tps->kelurahan_id)->nama;
+            $message   = "Terima kasih sudah berpartisipasi dalam pemilihan umum. \n\nLokasi Pemilihan Umum : \n" . $kota . "\nKecamatan : " . $kecamatan . "\nKelurahan : " . $kelurahan . "\nTPS : " . $tps->tps;
+            $reqParams = [
+                'token' => 'A=zCN1a=BuVNrfhZkaik^^JiEjb^fw@1KGeQUwkf1zutAn38-samsu',
+                'url' => 'https://api.kirimwa.id/v1/messages',
+                'method' => 'POST',
+                'payload' => json_encode([
+                    'message' => $message,
+                    'phone_number' => $nomor_hp,
+                    'message_type' => 'text',
+                    'device_id' => 'iphone-x-pro'
+                ])
+            ];
+            
+            $this->apiKirimWaRequest($reqParams);
+
             Data_penduduk::where('nik', $request['nik'])->update(['status' => 0]);
-            return redirect('/ppl/face-recognation/daftar');
+            
+            return redirect('/ppl/face-recognation/daftar')->with('success', 'Berhasil Daftar');
         }
     }
 
@@ -175,6 +238,6 @@ class FaceRecognationController extends Controller
             Data_penduduk::where('nik', $data_penduduk[0]->nik)->update(['antrean' => $flag_penduduk->antrean]);
         }
         Data_penduduk::where('nik', $request['nik'])->update(['status' => 2, 'antrean' => '-']);
-        return redirect('/ppl/antrean');
+        return redirect('/ppl/antrean')->with('success', 'Berhasil');
     }
 }
